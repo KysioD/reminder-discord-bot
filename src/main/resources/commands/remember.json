@@ -4,15 +4,27 @@
   "options": [
     {
       "type": 3,
-      "name": "Title",
+      "name": "title",
       "description": "Reminder title",
       "required": true
     },
     {
       "type": 3,
       "name": "time",
-      "description": "The time to remind you",
+      "description": "Time to remind format HH:MM",
       "required": true
+    },
+    {
+      "type": 3,
+      "name": "date",
+      "description": "Date to remind format DD/MM/YYYY",
+      "required": false
+    },
+    {
+      "type": 6,
+      "name": "relateduser",
+      "description": "User to remind",
+      "required": false
     }
   ]
 }
