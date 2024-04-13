@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Main {
     private static final String DISCORD_TOKEN = System.getenv("DISCORD_TOKEN");
-    private static final List<String> COMMANDS = List.of("remember.json");
+    private static final List<String> COMMANDS = List.of("remember.json", "reminders.json");
 
     public static void main(String[] args) {
         HibernateUtil.createSessionFactory();

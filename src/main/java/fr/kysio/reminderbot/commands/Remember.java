@@ -6,7 +6,10 @@ import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
 import discord4j.core.object.entity.User;
+import discord4j.rest.util.Color;
 import fr.kysio.reminderbot.data.Reminder;
+import fr.kysio.reminderbot.utils.HibernateUtil;
+import org.hibernate.Session;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -35,7 +38,7 @@ public class Remember implements SlashCommand {
         final Optional<LocalDate> date = event.getOption("date")
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString)
-                .map(LocalDate::parse);
+                .map(this::parseDate);
 
         final Optional<User> user = event.getOption("relateduser")
                 .flatMap(ApplicationCommandInteractionOption::getValue)
@@ -45,10 +48,7 @@ public class Remember implements SlashCommand {
         if (date.isEmpty()) {
             remindUserWithouDate(title, time, user.orElse(event.getInteraction().getUser()), event);
         } else {
-            event.reply(spec -> spec.addEmbed(embed -> {
-                embed.setTitle("Error");
-                embed.setDescription("This feature is not yet implemented");
-            }));
+            rememberWithDate(title, time, date.get(), user.orElse(event.getInteraction().getUser()), event);
         }
 
         return Mono.empty();
@@ -65,6 +65,11 @@ public class Remember implements SlashCommand {
         reminder.setCreatorUuid(event.getInteraction().getUser().getId().asString());
 
         //TODO: Save reminder in database
+        Session session = HibernateUtil.sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(reminder);
+        session.getTransaction().commit();
+        session.close();
 
         // Send embed with button for each weekday
 
@@ -78,14 +83,50 @@ public class Remember implements SlashCommand {
 
         // Send message with buttons
         event.reply(spec -> spec.addEmbed(embed -> {
-            embed.setTitle("Reminder : " + title);
-            embed.setDescription("Reminded at : "+time+"\nSelect the days of the week you want to be reminded");
-        }).setComponents(ActionRow.of(mondayButton, tuesdayButton, wednesdayButton), ActionRow.of(thursdayButton, fridayButton, saturdayButton, sundayButton)))
+                    embed.setTitle("Reminder : " + title);
+                    embed.setDescription("Reminded at : " + time + "\nSelect the days of the week you want to be reminded");
+                    embed.setFooter("By : " + user.getUsername(), null);
+                    embed.setColor(Color.GREEN);
+                }).setComponents(ActionRow.of(mondayButton, tuesdayButton, wednesdayButton), ActionRow.of(thursdayButton, fridayButton, saturdayButton, sundayButton)))
                 .block();
+    }
+
+    private void rememberWithDate(String title, LocalTime time, LocalDate date, User user, ChatInputInteractionEvent event) {
+        // Create default reminder
+        final Reminder reminder = new Reminder();
+        reminder.setName(title);
+        reminder.setExecutionTime(time);
+        reminder.setExecutionDate(date);
+        reminder.setUserUuid(user.getId().asString());
+        reminder.setChannelId(event.getInteraction().getChannelId().asLong());
+        reminder.setGuildId(event.getInteraction().getGuildId().get().asLong());
+        reminder.setCreatorUuid(event.getInteraction().getUser().getId().asString());
+
+        Session session = HibernateUtil.sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(reminder);
+        session.getTransaction().commit();
+        session.close();
+
+        event.reply(spec -> spec.addEmbed(embed -> {
+            embed.setTitle("Reminder : " + title);
+            embed.setDescription("Reminded at : " + time + " on " + date);
+            embed.setFooter("By : " + user.getUsername(), null);
+        })).block();
     }
 
     private LocalTime parseTime(String time) {
         final String[] split = time.split(":");
         return LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+    }
+
+    /**
+     * Date format is dd/MM/yyyy
+     * @param date
+     * @return
+     */
+    private LocalDate parseDate(String date) {
+        final String[] split = date.split("/");
+        return LocalDate.of(Integer.parseInt(split[2]), Integer.parseInt(split[1]), Integer.parseInt(split[0]));
     }
 }

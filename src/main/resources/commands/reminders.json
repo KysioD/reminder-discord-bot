@@ -1,0 +1,12 @@
+{
+  "name": "reminders",
+  "description": "List all reminders",
+  "options": [
+    {
+      "name": "user",
+      "description": "The user to list reminders for",
+      "type": 6,
+      "required": false
+    }
+  ]
+}
