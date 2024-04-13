@@ -1,8 +1,6 @@
 package fr.kysio.reminderbot.data;
 
 import fr.kysio.reminderbot.data.ids.ExecutionDayId;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 

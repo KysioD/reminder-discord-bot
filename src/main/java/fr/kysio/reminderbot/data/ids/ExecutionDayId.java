@@ -1,7 +1,5 @@
 package fr.kysio.reminderbot.data.ids;
 
-import lombok.AllArgsConstructor;
-
 import java.io.Serializable;
 
 

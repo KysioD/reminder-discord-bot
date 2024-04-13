@@ -14,8 +14,8 @@ dependencies {
     implementation group: 'io.micrometer', name: 'micrometer-core', version: '1.12.5'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.5.7.Final'
-    implementation 'org.projectlombok:lombok:1.18.22'
     implementation 'org.slf4j:slf4j-simple:1.7.32'
+    implementation 'org.postgresql:postgresql:42.3.3'
 
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
