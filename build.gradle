@@ -30,6 +30,10 @@ test {
     useJUnitPlatform()
 }
 
+task stage {
+    dependsOn build
+}
+
 sentry {
     includeSourceContext = true
 
