@@ -1,1 +1,1 @@
-worker: java -jar target/reminderbot-1.0-SNAPSHOT-all.jar
+worker: java -jar build/libs/reminderbot-1.0-SNAPSHOT-all.jar
