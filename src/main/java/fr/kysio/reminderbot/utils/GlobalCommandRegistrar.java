@@ -25,9 +25,6 @@ public class GlobalCommandRegistrar {
     // The name of the folder the commands json is in, inside our resources folder
     private static final String commandsFolderName = "commands/";
 
-    private static final Boolean IS_DEV_ENV = System.getenv("DISCORD_TOKEN") == null;
-    private static final Long GUILD_ID = 1192419670922362880L;
-
     public GlobalCommandRegistrar(RestClient restClient) {
         this.restClient = restClient;
     }
@@ -48,14 +45,6 @@ public class GlobalCommandRegistrar {
                 .readValue(json, ApplicationCommandRequest.class);
 
             commands.add(request); //Add to our array list
-        }
-
-        if (IS_DEV_ENV) {
-            applicationService.bulkOverwriteGuildApplicationCommand(applicationId, GUILD_ID, commands)
-                    .doOnNext(cmd -> LOGGER.debug("Successfully registered Guild Command " + cmd.name()))
-                    .doOnError(e -> LOGGER.error("Failed to register guild commands", e))
-                    .subscribe();
-            return;
         }
 
         /* Bulk overwrite commands. This is now idempotent, so it is safe to use this even when only 1 command

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class ReminderHistory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idReminder;
 
     private LocalDateTime executionDate;

@@ -6,29 +6,23 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "execution_day")
-@IdClass(ExecutionDayId.class)
+//@IdClass(ExecutionDayId.class)
 public class ExecutionDay {
-
+/*
     @Id
     @Column(name = "id_reminder")
     private Long idReminder;
 
     @Id
-    private Integer weekday;
+    private Integer weekday;*/
+    @EmbeddedId
+    private ExecutionDayId id;
 
-    public Long getIdReminder() {
-        return idReminder;
+    public ExecutionDayId getId() {
+        return id;
     }
 
-    public void setIdReminder(Long idReminder) {
-        this.idReminder = idReminder;
-    }
-
-    public Integer getWeekday() {
-        return weekday;
-    }
-
-    public void setWeekday(Integer weekday) {
-        this.weekday = weekday;
+    public void setId(ExecutionDayId id) {
+        this.id = id;
     }
 }

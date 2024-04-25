@@ -37,8 +37,8 @@ public class Reminder {
     @Column(name = "creator_uuid")
     private String creatorUuid;
 
-    @JoinColumn(name = "id_reminder")
-    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idreminder")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ExecutionDay> executionDays;
 
     public Long getIdReminder() {
