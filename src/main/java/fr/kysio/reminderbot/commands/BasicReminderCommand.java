@@ -9,6 +9,7 @@ import fr.kysio.reminderbot.data.ExecutionDay;
 import fr.kysio.reminderbot.data.Reminder;
 import fr.kysio.reminderbot.data.ids.ExecutionDayId;
 import fr.kysio.reminderbot.utils.HibernateUtil;
+import io.sentry.Sentry;
 import org.hibernate.Session;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -62,6 +63,7 @@ private final String name;
                 if (!disposable.isDisposed())
                     disposable.dispose();
             } catch (InterruptedException e) {
+                Sentry.captureException(e);
                 e.printStackTrace();
             }
         }).start();

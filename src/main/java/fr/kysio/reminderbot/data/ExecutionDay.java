@@ -6,15 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "execution_day")
-//@IdClass(ExecutionDayId.class)
 public class ExecutionDay {
-/*
-    @Id
-    @Column(name = "id_reminder")
-    private Long idReminder;
-
-    @Id
-    private Integer weekday;*/
     @EmbeddedId
     private ExecutionDayId id;
 

@@ -4,6 +4,7 @@ import discord4j.common.JacksonResources;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.rest.RestClient;
 import discord4j.rest.service.ApplicationService;
+import io.sentry.Sentry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,10 @@ public class GlobalCommandRegistrar {
         */
         applicationService.bulkOverwriteGlobalApplicationCommand(applicationId, commands)
             .doOnNext(cmd -> LOGGER.debug("Successfully registered Global Command " + cmd.name()))
-            .doOnError(e -> LOGGER.error("Failed to register global commands", e))
+            .doOnError(e -> {
+                LOGGER.error("Failed to register global commands", e);
+                Sentry.captureException(e);
+            })
             .subscribe();
     }
 

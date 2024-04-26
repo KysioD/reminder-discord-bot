@@ -15,8 +15,10 @@ import fr.kysio.reminderbot.listener.SlashCommandListener;
 import fr.kysio.reminderbot.utils.GlobalCommandRegistrar;
 import fr.kysio.reminderbot.utils.HibernateUtil;
 import fr.kysio.reminderbot.utils.QuoteRandomizer;
+import io.sentry.Sentry;
 import org.hibernate.Session;
 
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,7 +30,14 @@ public class Main {
     private static final List<String> COMMANDS = List.of("remember.json", "reminders.json");
 
     public static void main(String[] args) {
-        HibernateUtil.createSessionFactory();
+        setupSentry();
+
+        try {
+            HibernateUtil.createSessionFactory();
+        } catch (URISyntaxException e) {
+            Sentry.captureException(e);
+            throw new RuntimeException(e);
+        }
         final GatewayDiscordClient client = DiscordClientBuilder.create(DISCORD_TOKEN)
                 .build()
                 .login()
@@ -41,6 +50,7 @@ public class Main {
         try {
             new GlobalCommandRegistrar(client.getRestClient()).registerCommands(COMMANDS);
         } catch (Exception e) {
+            Sentry.captureException(e);
             e.printStackTrace();
         }
 
@@ -50,6 +60,22 @@ public class Main {
                 .then(client.onDisconnect())
                 .block();
 
+    }
+
+    private static void setupSentry() {
+        Sentry.init(options -> {
+            options.setDsn(System.getenv("SENTRY_DSN"));
+            options.setTracesSampleRate(1.0);
+        });
+
+        Sentry.configureScope(scope -> {
+            scope.setTag("environment", System.getenv("ENVIRONMENT"));
+            scope.setTag("app", "reminder-bot");
+        });
+
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            Sentry.captureException(e);
+        });
     }
 
     /**
@@ -104,6 +130,7 @@ public class Main {
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Sentry.captureException(e);
                 }
             }
         }).start();
