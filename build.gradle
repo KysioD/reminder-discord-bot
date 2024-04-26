@@ -58,4 +58,5 @@ sentry {
     org = "hayot"
     projectName = "reminder-discord-bot"
     authToken = System.getenv("SENTRY_AUTH_TOKEN")
+    version = "1.0.1"
 }
