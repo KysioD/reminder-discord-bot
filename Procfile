@@ -1,1 +1,1 @@
-worker: java -jar build/libs/reminderbot-1.0.1-all.jar
+worker: java -jar build/libs/reminderbot-1.0.2-all.jar
