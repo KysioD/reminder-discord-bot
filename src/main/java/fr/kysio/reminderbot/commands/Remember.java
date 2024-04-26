@@ -198,5 +198,8 @@ public class Remember extends BasicReminderCommand {
         } else {
             displayRemindUserWithDate(reminder.getName(), reminder.getExecutionTime(), LocalDate.now(), event.getInteraction().getUser(), event, reminder);
         }
+
+        session.getTransaction().commit();
+        session.close();
     }
 }

@@ -66,6 +66,7 @@ public class Main {
         Sentry.init(options -> {
             options.setDsn(System.getenv("SENTRY_DSN"));
             options.setTracesSampleRate(1.0);
+            options.setEnableMetrics(true);
         });
 
         Sentry.configureScope(scope -> {
