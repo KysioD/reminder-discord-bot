@@ -4,8 +4,7 @@ plugins {
     id 'io.sentry.jvm.gradle' version '4.5.0'
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
+group = 'fr.kysio.reminderbot'
 
 repositories {
     mavenCentral()
