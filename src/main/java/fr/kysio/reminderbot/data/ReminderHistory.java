@@ -1,5 +1,7 @@
 package fr.kysio.reminderbot.data;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -16,6 +18,18 @@ public class ReminderHistory {
     @JoinColumn(name = "id_reminder")
     @OneToOne
     private Reminder reminder;
+
+    @Column(name = "is_checked")
+    @ColumnDefault("false")
+    private Boolean isChecked;
+
+    public Boolean getChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(Boolean checked) {
+        isChecked = checked;
+    }
 
     public Long getIdReminder() {
         return idReminder;

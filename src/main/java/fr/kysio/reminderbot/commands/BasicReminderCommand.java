@@ -17,8 +17,8 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 
 public abstract class BasicReminderCommand implements SlashCommand {
-    
-private final String name;
+
+    private final String name;
 
     public BasicReminderCommand(String name) {
         this.name = name;
@@ -28,8 +28,6 @@ private final String name;
     public String getName() {
         return name;
     }
-
-
 
 
     protected Mono<Void> eventHandler(ButtonInteractionEvent event, Disposable disposable) {
